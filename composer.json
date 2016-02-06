@@ -1,5 +1,5 @@
 {
-	"name" : "quazardous/php-bump-verion",
+	"name" : "quazardous/php-bump-version",
 	"type" : "library",
     "description" : "PHP Bump version and other GIT helpers",
     "license" : "MIT",
