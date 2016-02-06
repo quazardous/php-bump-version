@@ -31,7 +31,7 @@ Example to bump a minor version (like 0.1.2 to 0.1.3):
 vendor/bin/bump_version bump -p
 ```
 
-More info on [Selantic Versioning](http://semver.org/).
+More info on [Semantic Versioning](http://semver.org/).
 
 
 ### merge_into ###
