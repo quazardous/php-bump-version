@@ -183,6 +183,7 @@ EOT;
             }
             static::write_ln();
             static::write_ln("# You should finish the release with :");
+            static::write_ln("git add -A");
             static::write_ln("git commit -a {$texts['commit']}");
             if ($branch == $this->config['develop_branch']) {
                 static::write_ln("git push");
@@ -248,6 +249,7 @@ EOT;
         static::write_ln();
         if ($dirty) {
             static::write_ln("# You should commit your work :");
+            static::write_ln("git add -A");
             static::write_ln("git commit -a {$texts['commit']}");
         }
         
