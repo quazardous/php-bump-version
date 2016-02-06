@@ -240,6 +240,7 @@ EOT;
         $texts = [
             'commit' => $text,
             'merge' => $text ? "Merge $branch: $text" : '',
+            'mergeback' => $text ? "Merge $target: $text" : '',
         ];
         
         foreach ($texts as &$text) {
@@ -259,14 +260,21 @@ EOT;
             static::write_ln("# You may want to pull $target :");
             static::write_ln("git pull");
         }
+        
         static::write_ln("# Merge $branch into $target :");
         static::write_ln("git merge $branch {$texts['merge']}");
         if ($target == $this->config['develop_branch'] || $target == $this->config['master_branch']) {
             static::write_ln("# You may want to push $target :");
             static::write_ln("git push");
         }
+        
         static::write_ln("# Go back to your working branch $branch :");
         static::write_ln("git checkout $branch");
+        if ($target == $this->config['develop_branch'] || $target == $this->config['master_branch']) {
+            static::write_ln("# At some point you may want to keep your working branch up-to-date :");
+            static::write_ln("git merge $target {$texts['mergeback']}");
+        }
+        
         static::write_ln();
         if ($target == $this->config['master_branch']) {
             static::write_ln("# WARNING: merging to $target should be done with caution.");
