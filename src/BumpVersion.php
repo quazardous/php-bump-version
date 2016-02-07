@@ -41,7 +41,7 @@ class BumpVersion
                     $this->help($cli);
                     return false;
                 }
-                return $this->bump($cli->parse($this->argv, false));
+                return $this->bumbCommand($cli->parse($this->argv, false));
             case 'merge_into':
                 $this->argv[0] .= ' merge_into';
                 $cli->description('Merge current branch into given branch')
@@ -50,7 +50,7 @@ class BumpVersion
                     $this->help($cli);
                     return false;
                 }
-                return $this->mergeInto($cli->parse($this->argv, false));
+                return $this->mergeIntoCommand($cli->parse($this->argv, false));
             default:
                 $this->help();
                 return false;
@@ -73,7 +73,14 @@ class BumpVersion
         static::write_ln();
     }
     
-    protected function bump(Args $args)
+    protected function disclaimer()
+    {
+        static::write_ln();
+        static::write_ln('# DICLAIMER: you should always copy/paste these commands one by one!');
+        static::write_ln();
+    }
+    
+    protected function bumbCommand(Args $args)
     {
         if ($args->getOpt('version')) {
             $version = $args->getOpt('version');
@@ -186,12 +193,15 @@ EOT;
             static::write_ln("git add -A");
             static::write_ln("git commit -a {$texts['commit']}");
             if ($branch == $this->config['develop_branch']) {
+                static::write_ln("# Keep the develop branch up-to-date :");
+                static::write_ln("git pull");
                 static::write_ln("git push");
             }
             if ($branch != $this->config['master_branch']) {
                 static::write_ln();
                 static::write_ln("# Merge on the master branch :");
                 static::write_ln("git checkout master");
+                static::write_ln("git pull");
                 static::write_ln("git merge --no-ff $branch {$texts['merge']}");
             }
             static::write_ln("git tag -a $nextVersion {$texts['tag']}");
@@ -216,10 +226,12 @@ EOT;
                 }
             }
             static::write_ln();
+            
+            $this->disclaimer();
         }
     }
     
-    protected function mergeInto(Args $args)
+    protected function mergeIntoCommand(Args $args)
     {
         $target = $args->getArg('target');
         if (!static::git_branch_exists($target)) {
@@ -281,6 +293,8 @@ EOT;
             static::write_ln("# You should use the bump command.");
             static::write_ln();
         }
+        
+        $this->disclaimer();
     }
     
     protected function init()
