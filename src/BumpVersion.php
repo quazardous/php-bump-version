@@ -45,7 +45,8 @@ class BumpVersion
             case 'merge_into':
                 $this->argv[0] .= ' merge_into';
                 $cli->description('Merge current branch into given branch')
-                    ->arg('target', 'Branch to merge into', true);
+                    ->arg('target', 'Branch to merge into', true)
+                    ->opt('paranoid:P', 'Be extra cautious.', false, 'bool');
                 if (count($this->argv) == 1) {
                     $this->help($cli);
                     return false;
@@ -269,6 +270,16 @@ EOT;
             static::write_ln("# You should commit your work :");
             static::write_ln("git add -A");
             static::write_ln("git commit -a {$texts['commit']}");
+        }
+        
+        if ($args->getOpt('paranoid')) {
+            if ($target == $this->config['develop_branch'] || $target == $this->config['master_branch']) {
+                static::write_ln("# We will pull and merge $target before all");
+                static::write_ln("git checkout $target");
+                static::write_ln("git pull");
+                static::write_ln("git checkout $branch");
+                static::write_ln("git merge $target {$texts['mergeback']}");
+            }
         }
         
         static::write_ln("# Checkout the target branch $target :");
