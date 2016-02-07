@@ -181,6 +181,7 @@ EOT;
                 'commit' => $text ? "Version $nextVersion: $text" : '',
                 'merge' => $text ? "Merge $branch: $text" : '',
                 'tag' => $text ? "Release $nextVersion: $text" : '',
+                'mergeback' => $text ? "Merge develop" : '',
             ];
         
             foreach ($texts as &$text) {
@@ -207,11 +208,15 @@ EOT;
             static::write_ln("git tag -a $nextVersion {$texts['tag']}");
             static::write_ln("git push");
             static::write_ln();
-            static::write_ln("# Get back on the develop branch :");
+            if ($branch == $this->config['develop_branch']) {
+                static::write_ln("# Get back on the develop branch :");
+            } else {
+                static::write_ln("# Merge back all the new stuff on the develop branch :");
+            }
             static::write_ln("git checkout develop");
             if ($branch != $this->config['develop_branch']) {
                 static::write_ln();
-                static::write_ln("# Merge back all the new stuff on the develop branch :");
+                static::write_ln("git pull");
                 static::write_ln("git merge --no-ff $branch {$texts['merge']}");
                 static::write_ln("git push");
                 if ($branch != $this->config['master_branch']) {
@@ -252,7 +257,7 @@ EOT;
         $texts = [
             'commit' => $text,
             'merge' => $text ? "Merge $branch: $text" : '',
-            'mergeback' => $text ? "Merge $target: $text" : '',
+            'mergeback' => $text ? "Merge $target" : '',
         ];
         
         foreach ($texts as &$text) {
