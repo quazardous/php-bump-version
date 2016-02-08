@@ -61,7 +61,7 @@ class BumpVersion
                     $this->help($cli);
                     return false;
                 }
-                return $this->mergeIntoCommand($cli->parse($this->argv, false));
+                return $this->mergeFromCommand($cli->parse($this->argv, false));
             default:
                 $this->help();
                 return false;
