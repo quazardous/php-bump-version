@@ -48,6 +48,20 @@ Example to merge current branch to develop branch:
 vendor/bin/bump_version merge_into develop
 ```
 
+### merge_from ###
+Merge for the lazy one.
+
+Displays the commands to merge the target branch into the current branch and checks if you may have to pull/push.
+
+```
+vendor/bin/bump_version merge_from <target> [options]
+```
+
+Example to merge develop branch to current branch:
+```
+vendor/bin/bump_version merge_from develop
+```
+
 ## Config ##
 
 At first use, `bump_version` will ask you to configure your project and will store this config in `.bump-version.php`.

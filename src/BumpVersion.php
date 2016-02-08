@@ -52,6 +52,16 @@ class BumpVersion
                     return false;
                 }
                 return $this->mergeIntoCommand($cli->parse($this->argv, false));
+            case 'merge_from':
+                $this->argv[0] .= ' merge_from';
+                $cli->description('Merge given branch into current branch')
+                    ->arg('target', 'Branch to merge from', true)
+                    ->opt('paranoid:P', 'Be extra cautious.', false, 'bool');
+                if (count($this->argv) == 1) {
+                    $this->help($cli);
+                    return false;
+                }
+                return $this->mergeIntoCommand($cli->parse($this->argv, false));
             default:
                 $this->help();
                 return false;
@@ -258,7 +268,7 @@ EOT;
         $texts = [
             'commit' => $text,
             'merge' => $text ? "Merge $branch: $text" : '',
-            'mergeback' => $text ? "Merge $target" : '',
+            'mergeback' => "Merge $target",
         ];
         
         foreach ($texts as &$text) {
@@ -309,6 +319,51 @@ EOT;
             static::write_ln("# You should use the bump command.");
             static::write_ln();
         }
+        
+        $this->disclaimer();
+    }
+    
+    protected function mergeFromCommand(Args $args)
+    {
+        $target = $args->getArg('target');
+        if (!static::git_branch_exists($target)) {
+            throw new \RuntimeException("Target branch $target does not exist", -1);
+        }
+        $dirty = null;
+        $branch = static::git_current_branch($dirty);
+        static::write_ln("Current branch: $branch");
+        
+        $text = '';
+        if ($dirty) {
+            static::write_ln("You have uncommitted work !");
+            static::write($dirty);
+            static::write_ln('---');
+            $text = static::read_text('Enter a commit description', '');
+        }
+        
+        $texts = [
+            'commit' => $text,
+            'mergeback' => "Merge $target",
+        ];
+        
+        foreach ($texts as &$text) {
+            $text = "-m \"$text\"";
+        }
+        
+        static::write_ln();
+        if ($dirty) {
+            static::write_ln("# You should commit your work :");
+            static::write_ln("git add -A");
+            static::write_ln("git commit -a {$texts['commit']}");
+        }
+        
+        if ($target == $this->config['develop_branch'] || $target == $this->config['master_branch']) {
+            static::write_ln("# We will pull $target before all");
+            static::write_ln("git checkout $target");
+            static::write_ln("git pull");
+            static::write_ln("git checkout $branch");
+        }
+        static::write_ln("git merge $target {$texts['mergeback']}");
         
         $this->disclaimer();
     }
