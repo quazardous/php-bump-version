@@ -290,7 +290,7 @@ EOT;
                 static::write_ln("git checkout $target");
                 static::write_ln("git pull");
                 static::write_ln("git checkout $branch");
-                static::write_ln("git merge $target {$texts['mergeback']}");
+                static::write_ln("git merge --no-ff $target {$texts['mergeback']}");
             }
         }
         
@@ -302,7 +302,7 @@ EOT;
         }
         
         static::write_ln("# Merge $branch into $target :");
-        static::write_ln("git merge $branch {$texts['merge']}");
+        static::write_ln("git merge --no-ff $branch {$texts['merge']}");
         if ($target == $this->config['develop_branch'] || $target == $this->config['master_branch']) {
             static::write_ln("# You may want to push $target :");
             static::write_ln("git push");
@@ -312,7 +312,7 @@ EOT;
         static::write_ln("git checkout $branch");
         if ($target == $this->config['develop_branch'] || $target == $this->config['master_branch']) {
             static::write_ln("# At some point you may want to keep your working branch up-to-date :");
-            static::write_ln("git merge $target {$texts['mergeback']}");
+            static::write_ln("git merge --no-ff $target {$texts['mergeback']}");
         }
         
         static::write_ln();
@@ -365,7 +365,7 @@ EOT;
             static::write_ln("git pull");
             static::write_ln("git checkout $branch");
         }
-        static::write_ln("git merge $target {$texts['mergeback']}");
+        static::write_ln("git merge --no-ff $target {$texts['mergeback']}");
         
         $this->disclaimer();
     }
