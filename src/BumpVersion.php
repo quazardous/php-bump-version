@@ -72,6 +72,7 @@ class BumpVersion
     {
         static::write_ln('PHP Bump version: version bumper and other git helpers');
         static::write_ln('(c) quazardous <berliozdavid@gmail.com>');
+        static::write_ln('Displays GIT commands you need.');
         static::write_ln();
         if ($cli) {
             $cli->writeHelp();
@@ -81,6 +82,7 @@ class BumpVersion
         static::write_ln('<command> can be:');
         static::write_ln('  bump: bump version');
         static::write_ln('  merge_into <branch>: merge current branch into given branch');
+        static::write_ln('  merge_from <branch>: merge given branch into current branch');
         static::write_ln();
     }
     
