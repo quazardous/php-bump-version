@@ -7,7 +7,20 @@
  * http://nvie.com/posts/a-successful-git-branching-model/
  * 
  */
-require_once __DIR__ . '/../../../../vendor/autoload.php';
+foreach ([
+    __DIR__ . '/../../../../vendor/autoload.php', // general case
+    __DIR__ . '/../vendor/autoload.php', // for this project
+    ] as $file)
+{
+    if (is_file($file)) {
+        $autoload = $file;
+        break;
+    }
+}
+if (!$autoload) {
+    throw new \RuntimeException('Something is wrong...');
+}
+require_once $autoload;
 
 use Quazardous\BumpVersion;
 
